@@ -1,3 +1,10 @@
 http://localhost {
-    respond "Infrastruktura działa" 200
+    # Endpointy API backendu Spring
+    reverse_proxy /api/v1/* http://host.docker.internal:8080
+
+    # Endpointy API frontendu (dla callbacku OIDC)
+    reverse_proxy /api/auth/* http://host.docker.internal:3000
+
+    # Cała reszta to aplikacja Nuxt
+    reverse_proxy * http://host.docker.internal:3000
 }
