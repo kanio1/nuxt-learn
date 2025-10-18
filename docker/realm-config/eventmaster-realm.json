@@ -1,0 +1,31 @@
+{
+  "realm": "eventmaster",
+  "enabled": true,
+  "clients": [
+    {
+      "clientId": "eventmaster-frontend",
+      "clientAuthenticatorType": "public",
+      "redirectUris": [
+        "http://localhost/api/auth/callback/keycloak"
+      ],
+      "webOrigins": [
+        "http://localhost"
+      ],
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true
+    }
+  ],
+  "roles": {
+    "realm": [
+      {
+        "name": "ROLE_USER",
+        "description": "Default user role"
+      },
+      {
+        "name": "ROLE_ORGANIZER",
+        "description": "Organizer role"
+      }
+    ]
+  }
+}
