@@ -30,6 +30,16 @@ services:
       - ../Caddyfile:/etc/caddy/Caddyfile
       - caddy-data:/data
 
+  cockroachdb:
+    image: cockroachdb/cockroach:latest-v23.2
+    command: start-single-node --insecure
+    ports:
+      - "26257:26257"
+      - "8081:8080"
+    volumes:
+      - cockroachdb-data:/cockroach/cockroach-data
+
 volumes:
   postgres-data:
   caddy-data:
+  cockroachdb-data:
