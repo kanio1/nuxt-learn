@@ -1,12 +1,15 @@
-import { NuxtAuthHandler } from '#auth'
-import KeycloakProvider from 'next-auth/providers/keycloak'
+import { NuxtAuthHandler } from '#auth';
+import KeycloakProvider from 'next-auth/providers/keycloak';
 
 export default NuxtAuthHandler({
+  // Potrzebny do podpisywania sesji Nuxt
+  secret: process.env.NUXT_AUTH_SECRET || 'super-tajny-sekret-zmien-mnie',
+
   providers: [
-    // @ts-expect-error You need to use .default here for it to work during SSR. May be fixed via Vite at some point
-    KeycloakProvider.default({
-      clientId: 'eventmaster-frontend',
-      issuer: 'http://localhost:8180/realms/eventmaster'
-    })
-  ]
-})
+    KeycloakProvider({
+      clientId: 'eventmaster-frontend', // Zgodnie z tym, co jest w Keycloak
+      clientSecret: 'dummy', // Niepotrzebne, ale czasem wymagane przez bibliotekę
+      issuer: 'http://localhost:8180/realms/eventmaster', // Issuer z Keycloak
+    }),
+  ],
+});
