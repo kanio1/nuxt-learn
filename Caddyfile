@@ -1,3 +1,23 @@
 http://localhost {
-    respond "Infrastruktura działa" 200
+    log {
+        output stderr
+    }
+
+    # 1. Reguła dla API Backendu (najbardziej specyficzna)
+    # Przekieruj wszystko co /api/v1/* do Spring Boota
+    reverse_proxy /api/v1/* http://host.docker.internal:8080 {
+        # Przekaż oryginalny nagłówek Host, aby CORS działał poprawnie
+        header_up Host {http.request.host}
+    }
+
+    # 2. Reguła dla API Frontendu (Nuxt Server Engine dla callbacku OIDC)
+    # Przekieruj /api/auth/* do serwera Nuxt
+    reverse_proxy /api/auth/* http://host.docker.internal:3000 {
+        header_up Host {http.request.host}
+    }
+
+    # 3. Reguła dla wszystkiego innego (aplikacja Nuxt)
+    reverse_proxy * http://host.docker.internal:3000 {
+        header_up Host {http.request.host}
+    }
 }
