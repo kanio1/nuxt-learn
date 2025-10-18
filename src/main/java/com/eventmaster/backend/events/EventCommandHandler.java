@@ -1,7 +1,9 @@
 package com.eventmaster.backend.events;
 
 import com.eventmaster.backend.events.command.CreateEventCommand;
+import com.eventmaster.backend.events.domain.Event;
 import com.eventmaster.backend.events.domain.EventCreatedEvent;
+import com.eventmaster.backend.events.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -20,7 +22,7 @@ public class EventCommandHandler {
     private final EventRepository eventRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate; // Generyczny template
 
-    @KafkaListener(topics = TOPIC_COMMANDS_EVENTS_CREATE)
+    @KafkaListener(topics = TOPIC_COMMANDS_EVENTS_CREATE, groupId = "event-command-handler")
     @Transactional // Kluczowe: Operacja zapisu do bazy jest transakcyjna
     public void handleCreateEventCommand(CreateEventCommand command) {
         log.info("Received command to create event: {}", command.eventId());
@@ -48,10 +50,10 @@ public class EventCommandHandler {
         // 3. Stworzenie Zdarzenia Domenowego
         EventCreatedEvent domainEvent = new EventCreatedEvent(
                 command.eventId(),
-                command.organizerId(),
                 command.title(),
                 command.description(),
-                command.eventDate()
+                command.eventDate(),
+                command.organizerId()
         );
 
         // 4. Publikacja Zdarzenia Domenowego na nowy topik
