@@ -33,20 +33,16 @@ services:
       - ../Caddyfile:/etc/caddy/Caddyfile
       - caddy-data:/data
 
-  redpanda:
-    image: docker.redpanda.com/redpandadata/redpanda:latest
-    command:
-      - redpanda start
-      - --smp 1
-      - --memory 1G
-      - --overprovisioned
-      - --node-id 0
-      - --kafka-addr PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
-      - --advertise-kafka-addr PLAINTEXT://redpanda:29092,OUTSIDE://localhost:9092
+  cockroachdb:
+    image: cockroachdb/cockroach:latest-v23.2
+    command: start-single-node --insecure
     ports:
-      - 9092:9092 # Port dla klientów (Spring)
-      - 29092:29092
+      - "26257:26257"
+      - "8081:8080"
+    volumes:
+      - cockroachdb-data:/cockroach/cockroach-data
 
 volumes:
   postgres-data:
   caddy-data:
+  cockroachdb-data:
